@@ -41,12 +41,32 @@ public class AutoBrightnessService extends Service {
     private SensorManager mSensorManager;
     private Sensor mLightSensor;
     private static int sensorType;
-    private static final int[] AutoBrightnessLux = ResourceUtils.getIntArray("glyph_auto_brightness_levels");
-    private static final int[] BrightnessValues = Constants.getBrightnessLevels();
+    // Lazy initialized to avoid crash before Constants.CONTEXT is set
+    private static int[] AutoBrightnessLux = null;
+    private static int[] BrightnessValues = null;
+
+    private static int[] getAutoBrightnessLux() {
+        if (AutoBrightnessLux == null) {
+            AutoBrightnessLux = ResourceUtils.getIntArray("glyph_auto_brightness_levels");
+        }
+        return AutoBrightnessLux;
+    }
+
+    private static int[] getBrightnessValues() {
+        if (BrightnessValues == null) {
+            BrightnessValues = Constants.getBrightnessLevels();
+        }
+        return BrightnessValues;
+    }
 
     @Override
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
+
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -90,19 +110,19 @@ public class AutoBrightnessService extends Service {
             int lux_index = 0;
             int brightnessValue;
 
-            for (int i = 1; i < AutoBrightnessLux.length; i++) {
-                if (lux < AutoBrightnessLux[i]) {
+            for (int i = 1; i < getAutoBrightnessLux().length; i++) {
+                if (lux < getAutoBrightnessLux()[i]) {
                     break;
-                } else if (lux >= AutoBrightnessLux[i]) {
+                } else if (lux >= getAutoBrightnessLux()[i]) {
                     lux_index = i;
                 }
             }
 
-            brightnessValue = BrightnessValues[lux_index];
+            brightnessValue = getBrightnessValues()[lux_index];
 
             if (brightnessValue != Constants.getBrightness()) {
                 if (DEBUG) {
-                    int led_lux = AutoBrightnessLux[lux_index];
+                    int led_lux = getAutoBrightnessLux()[lux_index];
                     Log.d(TAG, "Brightness changed: " + "RealLux: " + lux + 
                     " | BrightnessLux: " + led_lux + " | BrightnessValue: " + brightnessValue);
                 }

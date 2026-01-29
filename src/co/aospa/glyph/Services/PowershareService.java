@@ -42,6 +42,12 @@ public class PowershareService extends Service {
     @Override
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
+
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
+
         mPowershareActiveObserver = new PowershareActiveObserver();
         mContext = this;
     }

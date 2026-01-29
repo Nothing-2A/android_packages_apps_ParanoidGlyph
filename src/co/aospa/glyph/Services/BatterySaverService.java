@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import co.aospa.glyph.Constants.Constants;
 import co.aospa.glyph.Manager.StatusManager;
 import co.aospa.glyph.Manager.SettingsManager;
 import co.aospa.glyph.Utils.ServiceUtils;
@@ -46,6 +47,11 @@ public class BatterySaverService extends Service {
 
     @Override
     public void onCreate() {
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
+
         pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         registerReceiver(powerSaveReceiver,
                 new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED));
@@ -54,7 +60,8 @@ public class BatterySaverService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if ("co.aospa.glyph.UPDATE_BATTERY_SAVER".equals(intent.getAction())){
+        // Intent can be null when service is restarted by system (START_STICKY)
+        if (intent != null && "co.aospa.glyph.UPDATE_BATTERY_SAVER".equals(intent.getAction())){
             trackBatterySaver = intent.getBooleanExtra("status", false);
         }
         updateStatus();

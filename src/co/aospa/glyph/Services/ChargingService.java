@@ -35,6 +35,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 
+import co.aospa.glyph.Constants.Constants;
 import co.aospa.glyph.Manager.AnimationManager;
 
 public class ChargingService extends Service {
@@ -64,6 +65,11 @@ public class ChargingService extends Service {
     @Override
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
+
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
 
         // Add a handler thread
         thread = new HandlerThread("ChargingService");

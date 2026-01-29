@@ -27,6 +27,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 
+import co.aospa.glyph.Constants.Constants;
 import co.aospa.glyph.Manager.AnimationManager;
 import co.aospa.glyph.Manager.StatusManager;
 
@@ -57,6 +58,11 @@ public class MusicVisualizerService extends Service {
     @Override
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
+
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
 
         // Run visualizer on a handler thread
         thread = new HandlerThread("MusicVisualizerService");

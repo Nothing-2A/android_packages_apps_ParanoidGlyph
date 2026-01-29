@@ -63,6 +63,11 @@ public class NotificationService extends NotificationListenerService
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
 
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
+
         // Add a handler thread
         thread = new HandlerThread("NotificationService");
         thread.start();

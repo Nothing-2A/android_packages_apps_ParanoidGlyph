@@ -29,6 +29,7 @@ import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import co.aospa.glyph.Constants.Constants;
 import co.aospa.glyph.Manager.AnimationManager;
 import co.aospa.glyph.Manager.SettingsManager;
 
@@ -52,6 +53,11 @@ public class CallReceiverService extends Service {
     @Override
     public void onCreate() {
         if (DEBUG) Log.d(TAG, "Creating service");
+
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = getApplicationContext();
+        }
 
         // Add a handler thread
         thread = new HandlerThread("CallReceiverService");

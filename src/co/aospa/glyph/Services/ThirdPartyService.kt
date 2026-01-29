@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import co.aospa.glyph.Constants.Constants
 import co.aospa.glyph.Manager.AnimationManager
 import co.aospa.glyph.Manager.StatusManager
 import com.nothing.thirdparty.IGlyphService
@@ -37,6 +38,10 @@ class ThirdPartyService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        // Initialize context before anything else
+        if (Constants.CONTEXT == null) {
+            Constants.CONTEXT = applicationContext
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder {
